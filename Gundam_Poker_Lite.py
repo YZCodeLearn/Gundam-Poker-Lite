@@ -50,6 +50,16 @@ def king_card_label(pos):
 # === Game UI ===
 st.title(f"🎯 Round {st.session_state.round_num}")
 st.markdown("### Tap to rank players (1st and 2nd). Third is automatic.")
+st.markdown("""
+    <style>
+    div[role="radiogroup"] > label {
+        font-size: 1.3em;
+        padding: 0.5em 1em;
+        margin-bottom: 0.5em;
+        display: block;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Bigger radio buttons using markdown + spacing
 col1, col2 = st.columns(2)
