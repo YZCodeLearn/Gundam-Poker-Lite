@@ -10,7 +10,7 @@ if "players_ready" not in st.session_state:
     st.session_state.player_names = {}
 
 if not st.session_state.players_ready:
-    st.title("🎮 Ace Game Setup")
+    st.title("🎮 Gundam Poker Lite")
     st.write("Enter names for 3 players:")
 
     p1 = st.text_input("Player 1", value="")
