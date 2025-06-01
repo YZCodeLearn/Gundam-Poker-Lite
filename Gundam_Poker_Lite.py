@@ -128,7 +128,7 @@ if st.button("✅ Submit Round", use_container_width=True):
 if st.session_state.winner:
     st.success(f"🎉 Game over! {st.session_state.winner} has won the game! 🏆")
     st.balloons()
-    if st.button("🔁 Reset Game", use_container_width=True):
+    if st.button("🔁 Reset Game", use_container_width=True,key="reset_button"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
