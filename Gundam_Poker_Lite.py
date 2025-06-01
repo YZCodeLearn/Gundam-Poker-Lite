@@ -18,17 +18,10 @@ if not st.session_state.players_ready:
     p3 = st.text_input("Player 3", value="")
 
     if st.button("Start Game 🎲"):
-        st.session_state.player_names = {1: p1, 2: p2, 3: p3}
-        st.session_state.positions = {1: 2, 2: 2, 3: 2}
-        st.session_state.status = {1: "", 2: "", 3: ""}
-        st.session_state.history = {1: [2], 2: [2], 3: [2]}
-        st.session_state.fail_flags = {1: {"A1": False, "A2": False}, 2: {"A1": False, "A2": False}, 3: {"A1": False, "A2": False}}
-        st.session_state.prev_winner = None
-        st.session_state.prev_king_card = None
-        st.session_state.round_num = 1
-        st.session_state.winner = None
-        st.session_state.players_ready = True
-    st.stop()
+    # initialize state
+    st.session_state.players_ready = True
+st.stop()
+
 
 # === Config ===
 players = st.session_state.player_names
