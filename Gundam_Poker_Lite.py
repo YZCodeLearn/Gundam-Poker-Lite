@@ -2,7 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 
 # --- Page Setup ---
-st.set_page_config(page_title="Gundam Poker Lite", layout="centered")
+st.set_page_config(page_title="G Poker Lite", layout="centered")
 
 # === Player Name Setup ===
 if "players_ready" not in st.session_state:
