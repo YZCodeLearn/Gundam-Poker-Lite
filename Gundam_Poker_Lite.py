@@ -161,7 +161,7 @@ ax.legend()
 ax.grid(True)
 st.pyplot(fig)
 
-    if st.button("🔁 Reset Game", use_container_width=True):
+if st.button("🔁 Reset Game", use_container_width=True):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
