@@ -128,7 +128,7 @@ if st.button("✅ Submit Round", use_container_width=True):
 if st.session_state.winner:
     st.success(f"🎉 Game over! {st.session_state.winner} has won the game! 🏆")
     st.balloons()
-    if st.button("🔁 Reset Game", use_container_width=True,key="reset_button"):
+    if st.button("🔁 Reset Game", use_container_width=True):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
@@ -143,8 +143,23 @@ else:
         st.markdown(f"**{st.session_state.prev_king_card}**")
 
     st.subheader("📈 Progress History")
-    chart_data = {players[pid]: st.session_state.history[pid] for pid in players}
-    st.line_chart(chart_data)
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots()
+rounds = list(range(len(st.session_state.history[1])))
+colors = ["black", "red", "green"]
+
+for i, pid in enumerate(players):
+    y = st.session_state.history[pid]
+    ax.plot(rounds, y, color=colors[i], marker='o', label=players[pid])
+
+ax.set_xticks(rounds)
+ax.set_xlabel("Round #")
+ax.set_ylabel("Position")
+ax.set_title("Player Advancement Journey")
+ax.legend()
+ax.grid(True)
+st.pyplot(fig)
 
     if st.button("🔁 Reset Game", use_container_width=True):
         for key in list(st.session_state.keys()):
