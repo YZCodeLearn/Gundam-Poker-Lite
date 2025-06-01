@@ -133,7 +133,7 @@ if st.button("🔁 Reset Game", use_container_width=True):
     for key in list(st.session_state.keys()):
         del st.session_state[key]
     st.rerun()
-else:
+    else:
     st.markdown("---")
     st.subheader("📊 Player Status")
     for pid in players:
