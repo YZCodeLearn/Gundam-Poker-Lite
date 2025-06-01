@@ -50,18 +50,17 @@ def king_card_label(pos):
 # === Game UI ===
 st.title(f"🎯 Round {st.session_state.round_num}")
 st.markdown("### Tap to rank players (1st and 2nd). Third is automatic.")
-#st.markdown("""
-    #<style>
-    #div[role="radiogroup"] > label {
-        #font-size: 1.3em;
-        #padding: 0.5em 1em;
-        #margin-bottom: 0.5em;
-       # display: block;
-    #}
-    #</style>
-#""", unsafe_allow_html=True) 
+st.markdown("""
+    <style>
+    div[role="radiogroup"] > label {
+        font-size: 1.3em;
+        padding: 0.5em 1em;
+        margin-bottom: 0.5em;
+        display: block;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Bigger radio buttons using markdown + spacing
 col1, col2 = st.columns(2)
 with col1:
     first = st.radio("1st Place", list(players.values()), key="first_place", label_visibility="visible")
@@ -85,7 +84,7 @@ if st.button("✅ Submit Round", use_container_width=True):
 
     for pid in players:
         if st.session_state.positions[pid] >= target and st.session_state.status[pid] == "":
-            st.session_state.status[pid] = "A"
+            st.session_state.status[pid] = "A1"
             st.session_state.fail_flags[pid]["A1"] = False
             st.session_state.fail_flags[pid]["A2"] = False
 
@@ -98,9 +97,7 @@ if st.button("✅ Submit Round", use_container_width=True):
                 st.session_state.status[pid] = "A3"
                 st.session_state.fail_flags[pid]["A2"] = False
         else:
-            if st.session_state.status[pid] == "A":
-                st.session_state.status[pid] = "A1"
-            elif st.session_state.status[pid] == "A1":
+            if st.session_state.status[pid] == "A1":
                 st.session_state.fail_flags[pid]["A1"] = True
             elif st.session_state.status[pid] == "A2":
                 st.session_state.fail_flags[pid]["A2"] = True
@@ -117,7 +114,7 @@ if st.button("✅ Submit Round", use_container_width=True):
     current_king = king_card_label(st.session_state.positions[first_pid])
     st.session_state.prev_king_card = current_king
 
-    if st.session_state.prev_winner == first_pid and status_at_start[first_pid] in ["A", "A1", "A2", "A3"]:
+    if st.session_state.prev_winner == first_pid and status_at_start[first_pid] in ["A1", "A2", "A3"]:
         st.session_state.winner = players[first_pid]
 
     st.session_state.prev_winner = first_pid
@@ -146,3 +143,4 @@ else:
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
+
