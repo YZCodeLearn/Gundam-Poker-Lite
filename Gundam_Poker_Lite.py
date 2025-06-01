@@ -18,10 +18,17 @@ if not st.session_state.players_ready:
     p3 = st.text_input("Player 3", value="")
 
     if st.button("Start Game 🎲"):
-    # initialize state
-    st.session_state.players_ready = True
-st.stop()
-
+        st.session_state.player_names = {1: p1, 2: p2, 3: p3}
+        st.session_state.positions = {1: 2, 2: 2, 3: 2}
+        st.session_state.status = {1: "", 2: "", 3: ""}
+        st.session_state.history = {1: [2], 2: [2], 3: [2]}
+        st.session_state.fail_flags = {1: {"A1": False, "A2": False}, 2: {"A1": False, "A2": False}, 3: {"A1": False, "A2": False}}
+        st.session_state.prev_winner = None
+        st.session_state.prev_king_card = None
+        st.session_state.round_num = 1
+        st.session_state.winner = None
+        st.session_state.players_ready = True
+    st.stop()
 
 # === Config ===
 players = st.session_state.player_names
@@ -45,13 +52,16 @@ st.title(f"🎯 Round {st.session_state.round_num}")
 st.markdown("### Tap to rank players (1st and 2nd). Third is automatic.")
 st.markdown("""
     <style>
-    div[role="radiogroup"] > label {
-        font-size: 1.3em;
-        padding: 0.5em 1em;
-        margin-bottom: 0.5em;
-        display: block;
-    }
-    </style>
+/* Enlarge radio buttons and align bubble + label */
+div[role="radiogroup"] label {
+    font-size: 1.4em !important;
+    padding: 0.6em 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0.3em;
+}
+</style>
 """, unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
@@ -118,12 +128,10 @@ if st.button("✅ Submit Round", use_container_width=True):
 if st.session_state.winner:
     st.success(f"🎉 Game over! {st.session_state.winner} has won the game! 🏆")
     st.balloons()
-
-# Show reset button always
-if st.button("🔁 Reset Game", use_container_width=True):
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
-    st.rerun()
+    if st.button("🔁 Reset Game", use_container_width=True):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
 else:
     st.markdown("---")
     st.subheader("📊 Player Status")
