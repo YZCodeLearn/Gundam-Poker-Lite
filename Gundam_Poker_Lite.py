@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import time
 
 # --- Page Setup ---
-st.set_page_config(page_title="Gundam Poker Lite", layout="centered")
+st.set_page_config(page_title="G Poker Lite Tallyman", layout="centered")
 
 # === Player Name Setup ===
 if "players_ready" not in st.session_state:
