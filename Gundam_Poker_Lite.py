@@ -1,8 +1,9 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+import time
 
 # --- Page Setup ---
-st.set_page_config(page_title="G Poker Lite", layout="centered")
+st.set_page_config(page_title="Gundam Poker Lite", layout="centered")
 
 # === Player Name Setup ===
 if "players_ready" not in st.session_state:
@@ -22,19 +23,24 @@ if not st.session_state.players_ready:
         st.session_state.positions = {1: 2, 2: 2, 3: 2}
         st.session_state.status = {1: "", 2: "", 3: ""}
         st.session_state.history = {1: [2], 2: [2], 3: [2]}
-        st.session_state.fail_flags = {1: {"A1": False, "A2": False}, 2: {"A1": False, "A2": False}, 3: {"A1": False, "A2": False}}
+        st.session_state.fail_flags = {
+            1: {"A1": False, "A2": False},
+            2: {"A1": False, "A2": False},
+            3: {"A1": False, "A2": False},
+        }
         st.session_state.prev_winner = None
         st.session_state.prev_king_card = None
         st.session_state.round_num = 1
         st.session_state.winner = None
         st.session_state.players_ready = True
+        st.rerun()
+
     st.stop()
 
 # === Config ===
 players = st.session_state.player_names
 target = 14
 
-# === Utility ===
 def king_card_label(pos):
     if pos >= 14:
         return "主牌→A"
@@ -52,16 +58,15 @@ st.title(f"🎯 Round {st.session_state.round_num}")
 st.markdown("### Tap to rank players (1st and 2nd). Third is automatic.")
 st.markdown("""
     <style>
-/* Enlarge radio buttons and align bubble + label */
-div[role="radiogroup"] label {
-    font-size: 1.4em !important;
-    padding: 0.6em 1em;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    margin-bottom: 0.3em;
-}
-</style>
+    div[role="radiogroup"] label {
+        font-size: 1.4em !important;
+        padding: 0.6em 1em;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        margin-bottom: 0.3em;
+    }
+    </style>
 """, unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
@@ -122,47 +127,45 @@ if st.button("✅ Submit Round", use_container_width=True):
 
     st.session_state.prev_winner = first_pid
     st.session_state.round_num += 1
+    time.sleep(0.1)
     st.rerun()
 
 # === Game State ===
 if st.session_state.winner:
     st.success(f"🎉 Game over! {st.session_state.winner} has won the game! 🏆")
     st.balloons()
-    if st.button("🔁 Reset Game", use_container_width=True):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
-else:
-    st.markdown("---")
-    st.subheader("📊 Player Status")
-    for pid in players:
-        tag = f" [{st.session_state.status[pid]}]" if st.session_state.status[pid] else ""
-        st.markdown(f"**{players[pid]}**: Position {st.session_state.positions[pid]}{tag}")
 
-    if st.session_state.prev_king_card:
-        st.markdown(f"**{st.session_state.prev_king_card}**")
+# Always show Reset Game button
+if st.button("🔁 Reset Game", use_container_width=True, key="reset_game"):
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.rerun()
 
+# === Player Status ===
+st.markdown("---")
+st.subheader("📊 Player Status")
+for pid in players:
+    tag = f" [{st.session_state.status[pid]}]" if st.session_state.status[pid] else ""
+    st.markdown(f"**{players[pid]}**: Position {st.session_state.positions[pid]}{tag}")
+
+if st.session_state.prev_king_card:
+    st.markdown(f"**{st.session_state.prev_king_card}**")
+
+# === Plot only after game ends ===
+if st.session_state.winner:
     st.subheader("📈 Progress History")
-import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    rounds = list(range(len(st.session_state.history[1])))
+    colors = ["black", "red", "green"]
 
-fig, ax = plt.subplots()
-rounds = list(range(len(st.session_state.history[1])))
-colors = ["black", "red", "green"]
+    for i, pid in enumerate(players):
+        y = st.session_state.history[pid]
+        ax.plot(rounds, y, color=colors[i], marker='o', label=players[pid])
 
-for i, pid in enumerate(players):
-    y = st.session_state.history[pid]
-    ax.plot(rounds, y, color=colors[i], marker='o', label=players[pid])
-
-ax.set_xticks(rounds)
-ax.set_xlabel("Round #")
-ax.set_ylabel("Position")
-ax.set_title("Player Advancement Journey")
-ax.legend()
-ax.grid(True)
-st.pyplot(fig)
-
-if st.button("🔁 Reset Game", use_container_width=True,key='Reset_After_Over'):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
-
+    ax.set_xticks(rounds)
+    ax.set_xlabel("Round #")
+    ax.set_ylabel("Position")
+    ax.set_title("Player Advancement Journey")
+    ax.legend()
+    ax.grid(True)
+    st.pyplot(fig)
